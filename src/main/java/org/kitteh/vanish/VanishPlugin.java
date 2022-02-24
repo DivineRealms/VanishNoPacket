@@ -203,7 +203,7 @@ public final class VanishPlugin extends JavaPlugin implements Listener {
         for (final Player player : VanishPlugin.this.getServer().getOnlinePlayers()) {
             if (player != null) {
                 if (this.manager.isVanished(player)) {
-                    player.sendMessage(ChatColor.DARK_AQUA + "[Vanish] You have been forced visible by a reload.");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a▎ &fYou have been forced visible by a reload."));
                 }
             }
         }
@@ -223,7 +223,6 @@ public final class VanishPlugin extends JavaPlugin implements Listener {
             this.getServer().getPluginManager().registerEvents(new ListenPaper(this), this);
             this.paper = true;
             new BukkitRunnable() {
-                @SuppressWarnings("deprecation")
                 @Override
                 public void run() {
                     if (AsyncPlayerChatEvent.getHandlerList().getRegisteredListeners().length == 1) {

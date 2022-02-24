@@ -21,13 +21,11 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.vanish.event.VanishStatusChangeEvent;
 
@@ -40,31 +38,14 @@ import java.util.Set;
 import java.util.UUID;
 
 public final class VanishManager {
-    private static final class ShowPlayerEntry {
-        private final Player player;
-        private final Player target;
-
-        public ShowPlayerEntry(@NonNull Player player, @NonNull Player target) {
-            this.player = player;
-            this.target = target;
-        }
-
-        public @NonNull Player getPlayer() {
-            return this.player;
-        }
-
-        public @NonNull Player getTarget() {
-            return this.target;
-        }
+    private record ShowPlayerEntry(@NonNull Player player, @NonNull Player target) {
     }
 
     private static final class ShowPlayerHandler implements Runnable {
-        private final VanishPlugin plugin;
         private final Set<ShowPlayerEntry> entries = new HashSet<>();
         private final Set<ShowPlayerEntry> next = new HashSet<>();
 
-        private ShowPlayerHandler(VanishPlugin plugin) {
-            this.plugin = plugin;
+        private ShowPlayerHandler() {
         }
 
         public void add(@NonNull ShowPlayerEntry player) {
@@ -74,10 +55,10 @@ public final class VanishManager {
         @Override
         public void run() {
             for (final ShowPlayerEntry entry : this.next) {
-                final Player player = entry.getPlayer();
-                final Player target = entry.getTarget();
+                final Player player = entry.player();
+                final Player target = entry.target();
                 if (player.isOnline() && target.isOnline()) {
-                    player.showPlayer(this.plugin, target);
+                    player.showPlayer(target);
                 }
             }
             this.next.clear();
@@ -95,17 +76,14 @@ public final class VanishManager {
     private final VanishAnnounceManipulator announceManipulator;
     private final Random random = new Random();
     private final ShowPlayerHandler showPlayer;
-    private final NamespacedKey vanishCollideState;
 
     public VanishManager(final @NonNull VanishPlugin plugin) {
         this.plugin = plugin;
 
         this.announceManipulator = new VanishAnnounceManipulator(this.plugin);
 
-        this.showPlayer = new ShowPlayerHandler(this.plugin);
+        this.showPlayer = new ShowPlayerHandler();
         this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, this.showPlayer, 4, 4);
-
-        this.vanishCollideState = new NamespacedKey(this.plugin, "collidable");
 
         this.plugin.getServer().getMessenger().registerIncomingPluginChannel(this.plugin, VanishManager.VANISH_PLUGIN_CHANNEL, (channel, player, message) -> {
             if (channel.equals(VanishManager.VANISH_PLUGIN_CHANNEL) && new String(message).equals("check")) {
@@ -269,20 +247,12 @@ public final class VanishManager {
                     }
                 }
             }
-            vanishingPlayer.getPersistentDataContainer().set(this.vanishCollideState, PersistentDataType.BYTE, (byte) (vanishingPlayer.isCollidable() ? 0x01 : 0x00));
-            if (vanishingPlayer.isCollidable()) {
-                vanishingPlayer.setCollidable(false);
-            }
             this.vanishedPlayerNames.add(vanishingPlayerName);
             this.plugin.getLogger().info(vanishingPlayerName + " disappeared.");
         } else {
             Debuggle.log("It's visible time! " + vanishingPlayer.getName());
             this.resetSleepingIgnored(vanishingPlayer);
             this.removeVanished(vanishingPlayerName);
-            byte coll = vanishingPlayer.getPersistentDataContainer().getOrDefault(this.vanishCollideState, PersistentDataType.BYTE, (byte) 0x00);
-            if (coll == 0x01) {
-                vanishingPlayer.setCollidable(true);
-            }
             this.plugin.getLogger().info(vanishingPlayerName + " reappeared.");
         }
         if (effects) {
@@ -315,15 +285,15 @@ public final class VanishManager {
                 if (!VanishPerms.canSeeAll(otherPlayer)) {
                     if (otherPlayer.canSee(vanishingPlayer)) {
                         Debuggle.log("Hiding " + vanishingPlayer.getName() + " from " + otherPlayer.getName());
-                        otherPlayer.hidePlayer(this.plugin, vanishingPlayer);
+                        otherPlayer.hidePlayer(vanishingPlayer);
                     }
                 } else {
-                    otherPlayer.hidePlayer(this.plugin, vanishingPlayer);
+                    otherPlayer.hidePlayer(vanishingPlayer);
                     this.showPlayer.add(new ShowPlayerEntry(otherPlayer, vanishingPlayer));
                 }
             } else {
                 if (VanishPerms.canSeeAll(otherPlayer)) {
-                    otherPlayer.hidePlayer(this.plugin, vanishingPlayer);
+                    otherPlayer.hidePlayer(vanishingPlayer);
                 }
                 if (!otherPlayer.canSee(vanishingPlayer)) {
                     Debuggle.log("Showing " + vanishingPlayer.getName() + " to " + otherPlayer.getName());
@@ -434,7 +404,7 @@ public final class VanishManager {
     private void hideVanished(@NonNull Player player) {
         for (final Player otherPlayer : this.plugin.getServer().getOnlinePlayers()) {
             if (!player.equals(otherPlayer) && this.isVanished(otherPlayer) && player.canSee(otherPlayer)) {
-                player.hidePlayer(this.plugin, otherPlayer);
+                player.hidePlayer(otherPlayer);
             }
         }
     }
@@ -455,7 +425,7 @@ public final class VanishManager {
         for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
             for (final Player player2 : this.plugin.getServer().getOnlinePlayers()) {
                 if ((player != null) && (player2 != null) && !player.equals(player2)) {
-                    player.showPlayer(this.plugin, player2);
+                    player.showPlayer(player2);
                 }
             }
         }

@@ -30,7 +30,7 @@ public final class Settings {
     private static int lightningEffectCount;
     private static boolean doubleSneakDuringVanishSwitchesGameMode = false;
     private static int doubleSneakDuringVanishSwitchesGameModeTimeBetweenSneaksInMS = 500;
-    private static String doubleSneakDuringVanishSwitchesGameModeMessage = "&aGameMode changed!";
+    private static String doubleSneakDuringVanishSwitchesGameModeMessage = "&a▎ &fGameMode changed!";
 
     private static final int confVersion = 9; // Tracking config version
 
