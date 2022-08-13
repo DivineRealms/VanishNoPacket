@@ -1,0 +1,31 @@
+#
+# VanishNoPacket
+#   A fine choice of invisibility for the discerning server administrator.
+#   https://www.kitteh.org
+#
+#  See documentation for details:
+#  https://dev.bukkit.org/projects/vanish/pages/configuration
+#
+fakeannounce:
+    automaticforsilentjoin: false
+    join: '%p joined the game.'
+    quit: '%p left the game.'
+hooks:
+    essentials: false
+    dynmap: false
+    discordsrv: false
+    squaremap: false
+permissionsupdates:
+    checkonworldchange: false
+effects:
+    lightning:
+        count: 30
+
+permtest: false
+debug: false
+double-sneak-during-vanish-switches-gamemode:
+    enabled: false
+    max-ms-time-between-sneaks: 500
+    message: '&aGameMode changed!'
+configVersionDoNotTouch: 
+    SeriouslyThisWillEraseYourConfig: 9
