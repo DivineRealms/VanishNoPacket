@@ -72,7 +72,7 @@ public final class VanishManager {
         }
     }
 
-    public static final String VANISH_PLUGIN_CHANNEL = "vanishnopacket:status";
+    public static final String VANISH_PLUGIN_CHANNEL = "vnp:status";
 
     private final VanishPlugin plugin;
     private final Set<String> vanishedPlayerNames = Collections.synchronizedSet(new HashSet<>());
