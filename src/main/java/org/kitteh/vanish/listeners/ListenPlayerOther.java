@@ -26,10 +26,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.EntityBlockFormEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.event.raid.RaidTriggerEvent;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -139,13 +137,6 @@ public final class ListenPlayerOther implements Listener {
     public void onWorldChange(@NonNull PlayerChangedWorldEvent event) {
         if (Settings.getWorldChangeCheck()) {
             this.plugin.getManager().playerRefresh(event.getPlayer());
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onRaidTrigger(@NonNull RaidTriggerEvent event) {
-        if (this.plugin.getManager().isVanished(event.getPlayer())) {
-            event.setCancelled(true);
         }
     }
 
