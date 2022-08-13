@@ -29,13 +29,7 @@ import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.vanish.event.VanishStatusChangeEvent;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public final class VanishManager {
     private static final class ShowPlayerEntry {
@@ -203,12 +197,11 @@ public final class VanishManager {
         this.toggleVanishQuiet(togglingPlayer);
         final String vanishingPlayerName = togglingPlayer.getName();
         final String messageBit;
-        final String base = ChatColor.YELLOW + vanishingPlayerName + " has ";
+        final String base = ChatColor.translateAlternateColorCodes('&', "&a▎ &b" + vanishingPlayerName + " &fhas ");
         if (this.isVanished(togglingPlayer)) {
             Debuggle.log("LoudVanishToggle Vanishing " + togglingPlayer.getName());
             this.plugin.hooksVanish(togglingPlayer);
-            messageBit = "vanished. Poof.";
-
+            messageBit = "vanished.";
         } else {
             Debuggle.log("LoudVanishToggle Revealing " + togglingPlayer.getName());
             this.plugin.hooksUnvanish(togglingPlayer);
@@ -216,7 +209,7 @@ public final class VanishManager {
             this.announceManipulator.vanishToggled(togglingPlayer);
         }
         final String message = base + messageBit;
-        togglingPlayer.sendMessage(ChatColor.DARK_AQUA + "You have " + messageBit);
+        togglingPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a▎ &fYou have " + messageBit));
         this.plugin.messageStatusUpdate(message, togglingPlayer);
     }
 

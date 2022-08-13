@@ -18,8 +18,7 @@
 package org.kitteh.vanish.listeners;
 
 import org.bukkit.ChatColor;
-import org.bukkit.block.Container;
-import org.bukkit.block.EnderChest;
+import org.bukkit.block.ContainerBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -61,13 +60,14 @@ public final class ListenPlayerOther implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(@NonNull PlayerInteractEvent event) {
         final Player player = event.getPlayer();
-        if ((event.getAction() == Action.RIGHT_CLICK_BLOCK) && (event.getClickedBlock() != null) && (event.getClickedBlock().getState() instanceof Container) && !this.plugin.chestFakeInUse(player.getName()) && !player.isSneaking() && this.plugin.getManager().isVanished(event.getPlayer()) && VanishPerms.canReadChestsSilently(event.getPlayer())) {
-            final Container container = (Container) event.getClickedBlock().getState();
-            if (container instanceof EnderChest && this.plugin.getServer().getPluginManager().isPluginEnabled("EnderChestPlus") && VanishPerms.canNotInteract(player)) {
+        if ((event.getAction() == Action.RIGHT_CLICK_BLOCK) && (event.getClickedBlock() != null) && (event.getClickedBlock().getState() instanceof ContainerBlock) && !this.plugin.chestFakeInUse(player.getName()) && !player.isSneaking() && this.plugin.getManager().isVanished(event.getPlayer()) && VanishPerms.canReadChestsSilently(event.getPlayer())) {
+            final ContainerBlock container = (ContainerBlock) event.getClickedBlock().getState();
+            if (container != null && this.plugin.getServer().getPluginManager().isPluginEnabled("EnderChestPlus") && VanishPerms.canNotInteract(player)) {
                 event.setCancelled(true);
                 return;
             }
             Inventory inventory;
+            assert container != null;
             if (container.getInventory() instanceof DoubleChestInventory) {
                 inventory = this.plugin.getServer().createInventory(player, 54, "Silently opened inventory");
             } else {
@@ -75,7 +75,7 @@ public final class ListenPlayerOther implements Listener {
             }
             inventory.setContents(container.getInventory().getContents());
             this.plugin.chestFakeOpen(player.getName());
-            player.sendMessage(ChatColor.AQUA + "[VNP] Opening chest silently. Can not edit.");
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a▎ &fOpening chest silently. Can not edit."));
             player.openInventory(inventory);
             event.setCancelled(true);
         } else if (this.plugin.getManager().isVanished(player) && VanishPerms.canNotInteract(player)) {
@@ -94,7 +94,7 @@ public final class ListenPlayerOther implements Listener {
     public void onPlayerQuit(@NonNull PlayerQuitEvent event) {
         final Player player = event.getPlayer();
         if (this.plugin.getManager().isVanished(player)) {
-            this.plugin.messageStatusUpdate(ChatColor.DARK_AQUA + event.getPlayer().getName() + " has quit vanished");
+            this.plugin.messageStatusUpdate(ChatColor.translateAlternateColorCodes('&', "&8▎ &b" + event.getPlayer().getName() + " &fhas left vanished."));
         }
         this.plugin.getManager().playerQuit(player);
         this.plugin.hooksQuit(player);
