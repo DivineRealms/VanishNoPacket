@@ -93,12 +93,10 @@ public final class ListenPlayerOther implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerPickupItem(@NonNull EntityPickupItemEvent event) {
-        if (event.getEntity() instanceof Player) {
-            final Player player = (Player) event.getEntity();
-            if (this.plugin.getManager().isVanished(player) && VanishPerms.canNotPickUp(player))
-                event.setCancelled(true);
-        }
+    public void onPlayerPickupItem(@NonNull PlayerPickupItemEvent event) {
+        final Player player = event.getPlayer();
+        if (this.plugin.getManager().isVanished(player) && VanishPerms.canNotPickUp(player))
+            event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
