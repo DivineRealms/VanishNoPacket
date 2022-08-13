@@ -81,15 +81,18 @@ public final class ListenPlayerOther implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onFoodChange(@NonNull FoodLevelChangeEvent event) {
-        if (event.getEntity() instanceof final Player player && this.plugin.getManager().isVanished(player) && VanishPerms.canNotHunger(player)) {
-            event.setCancelled(true);
+        if (event.getEntity() instanceof Player) {
+            final Player player = (Player) event.getEntity();
+            if (this.plugin.getManager().isVanished(player) && VanishPerms.canNotHunger(player))
+                event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(@NonNull PlayerInteractEvent event) {
         final Player player = event.getPlayer();
-        if ((event.getAction() == Action.RIGHT_CLICK_BLOCK) && (event.getClickedBlock() != null) && (event.getClickedBlock().getState() instanceof Container container) && !this.plugin.chestFakeInUse(player.getName()) && !player.isSneaking() && this.plugin.getManager().isVanished(event.getPlayer()) && VanishPerms.canReadChestsSilently(event.getPlayer())) {
+        if ((event.getAction() == Action.RIGHT_CLICK_BLOCK) && (event.getClickedBlock() != null) && (event.getClickedBlock().getState() instanceof Container) && !this.plugin.chestFakeInUse(player.getName()) && !player.isSneaking() && this.plugin.getManager().isVanished(event.getPlayer()) && VanishPerms.canReadChestsSilently(event.getPlayer())) {
+            final Container container = (Container) event.getClickedBlock().getState();
             if (container instanceof EnderChest && this.plugin.getServer().getPluginManager().isPluginEnabled("EnderChestPlus") && VanishPerms.canNotInteract(player)) {
                 event.setCancelled(true);
                 return;
@@ -112,8 +115,10 @@ public final class ListenPlayerOther implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerPickupItem(@NonNull EntityPickupItemEvent event) {
-        if (event.getEntity() instanceof Player player && this.plugin.getManager().isVanished(player) && VanishPerms.canNotPickUp(player)) {
-            event.setCancelled(true);
+        if (event.getEntity() instanceof Player) {
+            final Player player = (Player) event.getEntity();
+            if (this.plugin.getManager().isVanished(player) && VanishPerms.canNotPickUp(player))
+                event.setCancelled(true);
         }
     }
 
@@ -170,8 +175,10 @@ public final class ListenPlayerOther implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityBlockForm(@NonNull EntityBlockFormEvent event) {
-        if ((event.getEntity() instanceof Player player) && this.plugin.getManager().isVanished(player)) {
-            event.setCancelled(true);
+        if (event.getEntity() instanceof Player) {
+            final Player player = (Player) event.getEntity();
+            if (this.plugin.getManager().isVanished(player))
+                event.setCancelled(true);
         }
     }
 }

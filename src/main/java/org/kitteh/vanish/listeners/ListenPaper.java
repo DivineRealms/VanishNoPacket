@@ -36,8 +36,10 @@ public final class ListenPaper implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onMount(@NonNull EntityMountEvent event) {
-        if ((event.getMount() instanceof Player player) && this.plugin.getManager().isVanished(player) && VanishPerms.canNotInteract((player))) {
-            event.setCancelled(true);
+        if (event.getMount() instanceof Player) {
+            final Player player = (Player) event.getMount();
+            if (this.plugin.getManager().isVanished(player) && VanishPerms.canNotInteract(player))
+                event.setCancelled(true);
         }
     }
 

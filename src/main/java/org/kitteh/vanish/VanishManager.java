@@ -38,7 +38,22 @@ import java.util.Set;
 import java.util.UUID;
 
 public final class VanishManager {
-    private record ShowPlayerEntry(@NonNull Player player, @NonNull Player target) {
+    private static final class ShowPlayerEntry {
+        private final Player player;
+        private final Player target;
+
+        public ShowPlayerEntry(@NonNull Player player, @NonNull Player target) {
+            this.player = player;
+            this.target = target;
+        }
+
+        public @NonNull Player getPlayer() {
+            return this.player;
+        }
+
+        public @NonNull Player getTarget() {
+            return this.target;
+        }
     }
 
     private static final class ShowPlayerHandler implements Runnable {
@@ -54,16 +69,6 @@ public final class VanishManager {
 
         @Override
         public void run() {
-            for (final ShowPlayerEntry entry : this.next) {
-                final Player player = entry.player();
-                final Player target = entry.target();
-                if (player.isOnline() && target.isOnline()) {
-                    player.showPlayer(target);
-                }
-            }
-            this.next.clear();
-            this.next.addAll(this.entries);
-            this.entries.clear();
         }
     }
 
@@ -242,8 +247,10 @@ public final class VanishManager {
             this.setSleepingIgnored(vanishingPlayer);
             if (VanishPerms.canNotFollow(vanishingPlayer)) {
                 for (final Entity entity : vanishingPlayer.getNearbyEntities(70, 70, 70)) {
-                    if (entity instanceof final Creature creature && creature.getTarget() != null && creature.getTarget().equals(vanishingPlayer)) {
-                        creature.setTarget(null);
+                    if (entity instanceof Creature) {
+                        final Creature creature = (Creature) entity;
+                        if (creature.getTarget() != null && creature.getTarget().equals(vanishingPlayer))
+                            creature.setTarget(null);
                     }
                 }
             }

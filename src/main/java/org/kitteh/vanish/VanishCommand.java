@@ -35,7 +35,8 @@ public final class VanishCommand implements CommandExecutor {
     public boolean onCommand(@NonNull CommandSender sender, @NonNull Command command, @NonNull String label, @NonNull String[] args) {
         // Plain /vanish
         if (args.length == 0) {
-            if (sender instanceof Player player) {
+            if (sender instanceof Player) {
+                final Player player = (Player) sender;
                 if (VanishPerms.canVanish(player)) {
                     this.plugin.getManager().toggleVanish(player);
                 } else {
@@ -77,11 +78,13 @@ public final class VanishCommand implements CommandExecutor {
             return true;
         }
         // Goodbye console!
-        if (!(sender instanceof final Player player)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.WHITE + "Did you mean " + ChatColor.YELLOW + "vanish reload" + ChatColor.WHITE + " or " + ChatColor.YELLOW + "vanish list" + ChatColor.AQUA + "?");
             return true;
         }
         // No more console options below this point
+
+        final Player player = (Player) sender;
 
         // Check if I'm vanished
         if (goal.equalsIgnoreCase("check")) {
