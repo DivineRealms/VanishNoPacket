@@ -42,13 +42,6 @@ public final class ListenPlayerOther implements Listener {
         this.plugin = instance;
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onBucketFill(@NonNull PlayerBucketFillEvent event) {
-        if (this.plugin.getManager().isVanished(event.getPlayer()) && VanishPerms.canNotInteract(event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDrop(@NonNull PlayerDropItemEvent event) {
         if (this.plugin.getManager().isVanished(event.getPlayer()) && VanishPerms.canNotInteract(event.getPlayer())) {
@@ -95,13 +88,6 @@ public final class ListenPlayerOther implements Listener {
         final Player player = event.getPlayer();
         if (this.plugin.getManager().isVanished(player) && VanishPerms.canNotPickUp(player))
             event.setCancelled(true);
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onPickupArrow(@NonNull PlayerPickupArrowEvent event) {
-        if (this.plugin.getManager().isVanished(event.getPlayer()) && VanishPerms.canNotPickUp(event.getPlayer())) {
-            event.setCancelled(true);
-        }
     }
 
     @EventHandler
