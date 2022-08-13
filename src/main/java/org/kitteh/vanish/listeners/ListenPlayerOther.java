@@ -96,19 +96,9 @@ public final class ListenPlayerOther implements Listener {
             }
             Inventory inventory;
             if (container.getInventory() instanceof DoubleChestInventory) {
-                if (this.plugin.isPaper()) {
-                    inventory = this.plugin.getServer().createInventory(player, 54, Component.text("Silently opened inventory"));
-                } else {
-                    //noinspection deprecation
-                    inventory = this.plugin.getServer().createInventory(player, 54, "Silently opened inventory");
-                }
+                inventory = this.plugin.getServer().createInventory(player, 54, "Silently opened inventory");
             } else {
-                if (this.plugin.isPaper()) {
-                    inventory = this.plugin.getServer().createInventory(player, container.getInventory().getType(), Component.text("Silently opened inventory"));
-                } else {
-                    //noinspection deprecation
-                    inventory = this.plugin.getServer().createInventory(player, container.getInventory().getType(), "Silently opened inventory");
-                }
+                inventory = this.plugin.getServer().createInventory(player, container.getInventory().getType(), "Silently opened inventory");
             }
             inventory.setContents(container.getInventory().getContents());
             this.plugin.chestFakeOpen(player.getName());
@@ -116,8 +106,6 @@ public final class ListenPlayerOther implements Listener {
             player.openInventory(inventory);
             event.setCancelled(true);
         } else if (this.plugin.getManager().isVanished(player) && VanishPerms.canNotInteract(player)) {
-            event.setCancelled(true);
-        } else if ((event.getAction() == Action.PHYSICAL) && (event.getClickedBlock() != null) && (event.getClickedBlock().getType() == Material.FARMLAND) && this.plugin.getManager().isVanished(player) && VanishPerms.canNotTrample(player)) {
             event.setCancelled(true);
         }
     }
@@ -146,12 +134,7 @@ public final class ListenPlayerOther implements Listener {
         this.plugin.hooksQuit(player);
         this.plugin.getManager().getAnnounceManipulator().dropDelayedAnnounce(player.getName());
         if (!this.plugin.getManager().getAnnounceManipulator().playerHasQuit(player.getName()) || VanishPerms.silentQuit(player)) {
-            if (this.plugin.isPaper()) {
-                event.quitMessage(null);
-            } else {
-                //noinspection deprecation
-                event.setQuitMessage(null);
-            }
+            event.setQuitMessage(null);
         }
         this.plugin.chestFakeClose(event.getPlayer().getName());
         this.playersAndLastTimeSneaked.remove(player.getUniqueId());
@@ -189,29 +172,6 @@ public final class ListenPlayerOther implements Listener {
     public void onEntityBlockForm(@NonNull EntityBlockFormEvent event) {
         if ((event.getEntity() instanceof Player player) && this.plugin.getManager().isVanished(player)) {
             event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOW)
-    public void onPlayerShift(@NonNull PlayerToggleSneakEvent event) {
-        if (!event.isSneaking() || !Settings.isDoubleSneakDuringVanishSwitchesGameMode() || !this.plugin.getManager().isVanished(event.getPlayer())) {
-            return;
-        }
-        final Player player = event.getPlayer();
-        final long now = System.currentTimeMillis();
-        final Long lastTime = this.playersAndLastTimeSneaked.put(player.getUniqueId(), now);
-        if ((lastTime != null) && (now - lastTime < Settings.getDoubleSneakDuringVanishSwitchesGameModeTimeBetweenSneaksInMS())) {
-            if (!Settings.getDoubleSneakDuringVanishSwitchesGameModeMessage().isBlank()) { //In case the user doesn't want a message to be sent at all
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', Settings.getDoubleSneakDuringVanishSwitchesGameModeMessage()));
-            }
-            final PersistentDataContainer persistentDataContainer = player.getPersistentDataContainer();
-            if (player.getGameMode() == GameMode.SPECTATOR) {
-                player.setGameMode(GameMode.valueOf(persistentDataContainer.getOrDefault(this.lastGameModeNamespacedKey, PersistentDataType.STRING, "CREATIVE")));
-            } else {
-                persistentDataContainer.set(this.lastGameModeNamespacedKey, PersistentDataType.STRING, player.getGameMode().name());
-                player.setGameMode(GameMode.SPECTATOR);
-            }
-            this.playersAndLastTimeSneaked.remove(player.getUniqueId());
         }
     }
 }

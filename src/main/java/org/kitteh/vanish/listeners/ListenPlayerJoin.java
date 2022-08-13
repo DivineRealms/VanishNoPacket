@@ -51,28 +51,24 @@ public final class ListenPlayerJoin implements Listener {
     public void onPlayerJoinLate(@NonNull PlayerJoinEvent event) {
         final StringBuilder statusUpdate = new StringBuilder();
         if (VanishPerms.joinVanished(event.getPlayer())) {
-            String message = ChatColor.DARK_AQUA + "You have joined vanished.";
+            String message = ChatColor.translateAlternateColorCodes('&', "&8▎ &fYou have joined vanished.");
             if (VanishPerms.canVanish(event.getPlayer())) {
-                message += " To appear: /vanish";
+                message += ChatColor.translateAlternateColorCodes('&', "&f To appear: &6/&evanish");
             }
             event.getPlayer().sendMessage(message);
             statusUpdate.append("vanished");
         }
         if (VanishPerms.joinWithoutAnnounce(event.getPlayer())) {
             this.plugin.getManager().getAnnounceManipulator().addToDelayedAnnounce(event.getPlayer().getName());
-            if (this.plugin.isPaper()) {
-                event.joinMessage(null);
-            } else {
-                //noinspection deprecation
-                event.setJoinMessage(null);
-            }
+            //noinspection deprecation
+            event.setJoinMessage(null);
             if (statusUpdate.length() != 0) {
                 statusUpdate.append(" and ");
             }
             statusUpdate.append("silently");
         }
         if (statusUpdate.length() != 0) {
-            this.plugin.messageStatusUpdate(ChatColor.DARK_AQUA + event.getPlayer().getName() + " has joined " + statusUpdate.toString());
+            this.plugin.messageStatusUpdate(ChatColor.translateAlternateColorCodes('&', "&a▎ &b" + event.getPlayer().getName() + " &fhas joined " + statusUpdate + "."));
         }
     }
 }

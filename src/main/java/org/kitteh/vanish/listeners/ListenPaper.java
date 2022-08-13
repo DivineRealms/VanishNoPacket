@@ -17,16 +17,11 @@
  */
 package org.kitteh.vanish.listeners;
 
-import com.destroystokyo.paper.event.entity.PhantomPreSpawnEvent;
-import com.destroystokyo.paper.event.entity.PlayerNaturallySpawnCreaturesEvent;
-import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
-import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
-import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
-import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.vanish.VanishPerms;
 import org.kitteh.vanish.VanishPlugin;
@@ -46,43 +41,8 @@ public final class ListenPaper implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onNaturalSpawn(@NonNull PlayerNaturallySpawnCreaturesEvent event) {
-        if (this.plugin.getManager().isVanished(event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onPhantom(@NonNull PhantomPreSpawnEvent event) {
-        if ((event.getSpawningEntity() instanceof Player player) && this.plugin.getManager().isVanished(player)) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onPickupExperience(@NonNull PlayerPickupExperienceEvent event) {
-        if (this.plugin.getManager().isVanished(event.getPlayer()) && VanishPerms.canNotPickUp(event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onProjectileCollide(@NonNull ProjectileCollideEvent event) {
-        if ((event.getCollidedWith() instanceof Player player) && this.plugin.getManager().isVanished(player)) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerAdvancementCriterionGrant(@NonNull PlayerAdvancementCriterionGrantEvent event) {
-        if (this.plugin.getManager().isVanished(event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
-
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onChat(@NonNull AsyncChatEvent event) {
+    public void onChat(@NonNull AsyncPlayerChatEvent event) {
         if (this.plugin.getManager().isVanished(event.getPlayer()) && VanishPerms.canNotChat(event.getPlayer())) {
             event.setCancelled(true);
         }

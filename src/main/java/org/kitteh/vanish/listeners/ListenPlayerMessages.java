@@ -58,10 +58,9 @@ public final class ListenPlayerMessages implements Listener {
                 }
                 final StringBuilder message = new StringBuilder();
                 String permission;
-                message.append(ChatColor.DARK_AQUA);
                 if ((split.length == 2) && selfTest) {
                     permission = split[1];
-                    message.append("You");
+                    message.append(ChatColor.translateAlternateColorCodes('&', "&4▎ &cYou"));
                     if (!event.getPlayer().hasPermission(permission)) {
                         message.append(" do not");
                     }
@@ -69,12 +68,12 @@ public final class ListenPlayerMessages implements Listener {
                 } else if ((split.length == 3) && otherTest) {
                     final Player target = this.plugin.getServer().getPlayer(split[1]);
                     if (target == null) {
-                        message.append("Cannot find player: ").append(ChatColor.AQUA).append(split[1]);
+                        message.append(ChatColor.translateAlternateColorCodes('&', "&4▎ &cCannot find player: &b" + split[1])).append(ChatColor.translateAlternateColorCodes('&', "&c."));
                         event.getPlayer().sendMessage(message.toString());
                         event.setCancelled(true);
                         return;
                     }
-                    message.append("Player ").append(ChatColor.AQUA).append(target.getName()).append(ChatColor.DARK_AQUA);
+                    message.append(ChatColor.translateAlternateColorCodes('&', "&4▎ &cPlayer &b" + target.getName()));
                     permission = split[2];
                     if (!target.hasPermission(permission)) {
                         message.append(" does not have ");
@@ -85,7 +84,7 @@ public final class ListenPlayerMessages implements Listener {
                     return;
                 }
                 event.setCancelled(true);
-                message.append(ChatColor.AQUA).append(permission);
+                message.append(ChatColor.translateAlternateColorCodes('&', "&e" + permission + "&c."));
                 event.getPlayer().sendMessage(message.toString());
             }
 

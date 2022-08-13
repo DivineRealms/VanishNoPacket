@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="VanishNoPacket">
+    <output-path>$PROJECT_DIR$/out/artifacts/VanishNoPacket</output-path>
+    <root id="archive" name="VanishNoPacket.jar">
+      <element id="module-output" name="VanishNoPacket" />
+    </root>
+  </artifact>
+</component>
